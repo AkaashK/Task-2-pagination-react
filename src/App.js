@@ -8,6 +8,7 @@ const App = () => {
   const [posts, setPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [postsPerPage, setPostsPerPage] = useState(5);
+  const selectOptions = [5, 10, 20, 30];
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -27,8 +28,7 @@ const App = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handlePostsPerPageChange = (event) => {
-    const postLimit = event.target.value;
-    setPostsPerPage(postLimit);
+    setPostsPerPage(event.target.value);
   };
 
   const handleChangePrevPage = () => {
@@ -38,10 +38,12 @@ const App = () => {
   const handleChangeNextPage = () => {
     setCurrentPage(currentPage + 1);
   };
+
   const calculateValue = postsPerPage * currentPage;
+  const totalLengthOfPosts = posts.length;
   const enableButton =
     calculateValue > postsPerPage * (currentPage - 1) &&
-    calculateValue < posts.length;
+    calculateValue < totalLengthOfPosts;
 
   return (
     <div className="container mt-5">
@@ -49,21 +51,20 @@ const App = () => {
       <Posts posts={currentPosts} />
       <button disabled={currentPage === 1} onClick={handleChangePrevPage}>
         Prev
-      </button>{" "}
+      </button>
       <button disabled={!enableButton} onClick={handleChangeNextPage}>
         Next
       </button>
       <Pagination
         postsPerPage={postsPerPage}
-        totalPosts={posts.length}
+        totalPosts={totalLengthOfPosts}
         paginate={paginate}
       />
       <br />
       <select onChange={handlePostsPerPageChange}>
-        <option>5</option>
-        <option>10</option>
-        <option>20</option>
-        <option>30</option>
+        {selectOptions.map((value) => (
+          <option key={value}>{value}</option>
+        ))}
       </select>
     </div>
   );
